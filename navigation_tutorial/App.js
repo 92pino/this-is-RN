@@ -1,51 +1,84 @@
-
-import * as React from 'react';
-import { Text, StatusBar, Button, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StatusBar, Button, StyleSheet, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 // import { SafeAreaProvider } from 'react-native-safe-area-context';
 // import SafeAreaView from 'react-native-safe-area-view';
 
-function Screen1({ navigation }) {
+const HomeScreen = ({ navigation, route }) => {
+  useEffect(() => {
+    if (route.params?.post) {
+      console.log(1111);
+    }
+  }, [route.params?.post]);
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#6a51ae' }]}>
-      <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-      <Text style={{ color: '#fff' }}>Light Screen</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Home Screen</Text>
       <Button
-        title="Next screen"
-        onPress={() => navigation.navigate('Screen2')}
-        color="#fff"
+        title="Go to Details"
+        onPress={() => navigation.navigate('CreatePost')}
       />
-    </SafeAreaView>
-  );
+      <Text style={{ margin: 10 }}>Post: {route.params?.post}</Text>
+    </View>
+  )
 }
 
-function Screen2({ navigation }) {
+const CreatePostScreen = ({ navigation, route }) => {
+  const [postText, setPostText] = useState('');
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#ecf0f1' }]}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ecf0f1" />
-      <Text>Dark Screen</Text>
-      <Button
-        title="Next screen"
-        onPress={() => navigation.navigate('Screen1')}
+    <>
+      <TextInput
+        multiline
+        placeholder="What's on your mind?"
+        style={{ height: 200, padding: 10, backgroundColor: '#fff'}}
+        value={postText}
+        onChangeText={setPostText}
       />
-    </SafeAreaView>
-  );
+      <Button
+        title="Done"
+        onPress={() => {
+          navigation.navigate('Home', { post: postText })
+        }}
+      />
+    </>
+  )
+}
+
+const DetailsScreen = ({ route, navigation }) => {
+  const { itemId } = route.params;
+  const { otherParam } = route.params;
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      <Text>itemId: {JSON.stringify(itemId)}</Text>
+      <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+      <Button
+        title="Go to Details... again"
+        onPress={() => 
+          navigation.push('Details', {
+            itemId: Math.floor(Math.random() * 100),
+          })
+        }
+      />
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
+  )
 }
 
 const Stack = createStackNavigator();
 
-export default function App() {
+const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Screen1" component={Screen1} />
-        <Stack.Screen name="Screen2" component={Screen2} />
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="CreatePost" component={CreatePostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-});
+export default App;
