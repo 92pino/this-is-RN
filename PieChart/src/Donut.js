@@ -14,17 +14,19 @@ const data = [
   { x: 3, y: 5},
 ];
 
+const size = 500;
+
 const Donut = () => {
   return (
     <View style={styles.container}>
       {/* <VictoryPie data={data} x="quarter" y="earnings" /> */}
-      <Svg width={250} height={250}>
+      <Svg width={size} height={size}>
         <VictoryPie 
           standalone={false}
-          width={250}
-          height={250}
+          width={size}
+          height={size}
           data={data}       // 데이터
-          innerRadius={45}  // 내부 공백 사이즈
+          innerRadius={size / 4}  // 내부 공백 사이즈
           labelRadius={0}   // 라벨 위치
           colorScale={["red", "orange", "pink", "blue", "green", "purple", "white"]}  // 각 데이터별 color값
           style={{
@@ -35,17 +37,24 @@ const Donut = () => {
           textAnchor="middle"
           verticalAnchor="middle"
           style={[
+            // 배열로 각각 스타일을 줄수 있다.
             {
-              fontSize: 15,
-              color: "#28323B",
+              fontSize: 30,
+              color: 'red',
               fontWeight: "600",
               lineHeight: 40
             },
-            { fontWeight: "600", fontSize: 16 }
+            {
+              fontSize: 30,
+              color: 'red',
+              fontWeight: "bold",
+              lineHeight: 40
+            }
           ]}
-          x={250 * 0.5}
-          y={250 * 0.5}
-          text={["2,717.3", "lbs of credit", "test"]}
+          // label 중앙 정렬
+          x={size * 0.5}
+          y={size * 0.5}
+          text={["2,717.3", "lbs of credit", `${data[0].y + data[1].y + data[2].y}`]}
         />
       </Svg>
     </View>
